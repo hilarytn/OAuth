@@ -1,3 +1,5 @@
+import mongoose from 'mongoose';
+
 const userSchema = new mongoose.Schema({
   googleId: { type: String, unique: false },
   name: String,
@@ -5,3 +7,5 @@ const userSchema = new mongoose.Schema({
   picture: String,
   password: { type: String },
 });
+
+export const User = mongoose.model('User', userSchema);
