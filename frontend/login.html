@@ -1,0 +1,30 @@
+<h2>Login</h2>
+<form id="loginForm">
+  <input type="email" name="email" required placeholder="Email" />
+  <input type="password" name="password" required placeholder="Password" />
+  <button type="submit">Login</button>
+</form>
+
+<script>
+  document.getElementById('loginForm').onsubmit = async (e) => {
+    e.preventDefault();
+    const form = e.target;
+
+    const res = await fetch('/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email: form.email.value,
+        password: form.password.value,
+      }),
+    });
+
+    const data = await res.json();
+    if (res.ok) {
+      alert(`Welcome, ${data.user.name}!`);
+      window.location.href = '/welcome.html?name=' + data.user.name;
+    } else {
+      alert(data.message);
+    }
+  };
+</script>
