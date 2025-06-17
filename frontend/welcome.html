@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Welcome</title>
+</head>
+<body>
+  <h2 id="greeting">Loading...</h2>
+  <p id="email"></p>
+  <img id="avatar" src="" alt="User Avatar" width="100" />
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const name = params.get('name');
+    const email = params.get('email');
+    const picture = params.get('picture');
+
+    if (name) {
+      document.getElementById('greeting').innerText = `Hello, ${name}!`;
+      document.getElementById('email').innerText = `Email: ${email}`;
+      document.getElementById('avatar').src = picture;
+    } else {
+      document.getElementById('greeting').innerText = `Login failed or no data received.`;
+    }
+  </script>
+</body>
+</html>
