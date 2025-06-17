@@ -5,10 +5,13 @@ import mongoose from 'mongoose';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { User } from './models/User.js';
+import bcrypt from 'bcrypt';
 
 dotenv.config();
 const app = express();
 const PORT = 3000;
+
+app.use(express.json());
 
 // Static frontend
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -18,6 +21,24 @@ app.use(express.static(path.join(__dirname, '../frontend')));
 mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log('✅ MongoDB connected'))
   .catch(err => console.error('❌ MongoDB error:', err));
+
+app.post('/auth/set-password', async (req, res) => {
+  const { email, password } = req.body;
+
+  if (!email || !password) return res.status(400).json({ message: 'Email and password required' });
+
+  const user = await User.findOne({ email });
+  if (!user) return res.status(404).json({ message: 'User not found' });
+
+  if (user.password) return res.status(400).json({ message: 'Password already set' });
+
+  const hashed = await bcrypt.hash(password, 10);
+  user.password = hashed;
+  await user.save();
+
+  res.status(200).json({ message: 'Password set successfully' });
+});
+
 
 // Redirect to Google login
 app.get('/auth/google', (req, res) => {
